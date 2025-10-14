@@ -52,12 +52,18 @@
           <fieldset>
             <legend>¿Qué presentas hoy?</legend>
             <label><input type="checkbox" name="sym" value="fiebre" /> Fiebre</label>
-            <label><input type="checkbox" name="sym" value="dolor_cabeza" /> Dolor de cabeza</label>
-            <label><input type="checkbox" name="sym" value="dolor_muscular" /> Dolor muscular / piernas</label>
             <label><input type="checkbox" name="sym" value="tos" /> Tos</label>
+            <label><input type="checkbox" name="sym" value="dolor_garganta" /> Dolor de garganta</label>
             <label><input type="checkbox" name="sym" value="congestion" /> Congestión nasal</label>
-            <label><input type="checkbox" name="sym" value="garganta" /> Dolor de garganta</label>
-            <label><input type="checkbox" name="sym" value="nausea" /> Náuseas</label>
+            <label><input type="checkbox" name="sym" value="dolor_cabeza" /> Dolor de cabeza / migraña</label>
+            <label><input type="checkbox" name="sym" value="dolor_muscular" /> Dolor muscular / golpes</label>
+            <label><input type="checkbox" name="sym" value="nausea" /> Náuseas / malestar digestivo</label>
+            <label><input type="checkbox" name="sym" value="acidez" /> Acidez estomacal</label>
+            <label><input type="checkbox" name="sym" value="insomnio" /> Ansiedad / insomnio</label>
+            <label><input type="checkbox" name="sym" value="irritacion_piel" /> Irritación cutánea / quemadura leve</label>
+            <label><input type="checkbox" name="sym" value="heridas_leves" /> Heridas leves / aftas</label>
+            <label><input type="checkbox" name="sym" value="mal_aliento" /> Mal aliento</label>
+            <label><input type="checkbox" name="sym" value="retencion_liquidos" /> Retención de líquidos</label>
           </fieldset>
 
           <div style="margin-top:12px"></div>
@@ -118,59 +124,32 @@
     last.textContent = new Date().toLocaleString();
 
     const CATALOG = {
-      gripe: [
-        {
-          name: 'Paracetamol/Acetaminofén (analgésico/antipirético)',
-          pros: ['Alivia fiebre y dolor general', 'Generalmente bien tolerado a dosis indicadas'],
-          cons: ['Evitar sobredosis / duplicar marcas', 'Consultar si hay enfermedad hepática'],
-        },
-        {
-          name: 'Ibuprofeno (AINE)',
-          pros: ['Útil para dolor muscular y fiebre'],
-          cons: ['Puede irritar estómago', 'Evitar en úlcera activa, insuficiencia renal, embarazo avanzado'],
-        },
-        {
-          name: 'Descongestionante nasal (p. ej., pseudoefedrina o oximetazolina tópica)',
-          pros: ['Reduce congestión por corto tiempo'],
-          cons: ['Evitar en hipertensión no controlada', 'No usar spray >3 días (rebote)'],
-        },
-        {
-          name: 'Antitusivo suave (p. ej., dextrometorfano) o miel en adultos',
-          pros: ['Calma la tos improductiva'],
-          cons: ['No combinar con ciertos antigripales', 'No miel en menores de 1 año'],
-        },
-      ],
-      migraña: [
-        {
-          name: 'Paracetamol o AINE (ibuprofeno/naproxeno) al inicio',
-          pros: ['Más efectivos si se toman al inicio del dolor'],
-          cons: ['Revisar estómago, riñón y dosis máxima diaria'],
-        },
-        {
-          name: 'Hidratación + descanso en ambiente oscuro',
-          pros: ['Baja estimulación y mejora síntomas acompañantes'],
-          cons: ['No siempre suficiente en crisis intensas'],
-        },
-      ],
-      dolor_muscular: [
-        {
-          name: 'Ibuprofeno/naproxeno (AINE) o paracetamol',
-          pros: ['Dolor y molestias post-esfuerzo'],
-          cons: ['Ajustar a condición personal; evitar mezclas innecesarias'],
-        },
-        {
-          name: 'Compresas frías/calientes, reposo relativo',
-          pros: ['Apoya recuperación sin fármacos'],
-          cons: ['Puede requerir días; evitar sobreesfuerzo'],
-        },
-      ],
-      indef: [
-        {
-          name: 'Medidas generales',
-          pros: ['Hidratación, descanso, monitoreo de temperatura'],
-          cons: ['Si empeora o dura >48–72h, buscar evaluación'],
-        },
-      ],
+      // Basado SOLO en el documento del grupo (no diagnóstico). Cada remedio incluye usos tentativos.
+      remedies: [
+        { key: 'miel_limon', icon: '🍯🍋', name: 'Miel con limón', helps: ['tos','dolor_garganta','resfriado_gripe'], pros: ['Suaviza garganta','Sabor agradable'], cons: ['No usar en menores de 1 año'] },
+        { key: 'jengibre_miel', icon: '🫚🍯', name: 'Jengibre con miel', helps: ['nausea','malestar_digestivo','resfriado_gripe'], pros: ['Antiinflamatorio ligero'], cons: ['Evitar en úlcera activa'] },
+        { key: 'aloe_gel', icon: '🌵', name: 'Sábila (gel tópico)', helps: ['irritacion_piel','quemadura_leve','heridas_leves'], pros: ['Hidratante','Calmante'], cons: ['No ingerir el látex'] },
+        { key: 'compresa_sabila', icon: '🧊🌵', name: 'Compresa de sábila para golpes', helps: ['dolor_muscular','golpes','inflamacion_local'], pros: ['Refresca y desinflama'], cons: ['Uso externo'] },
+        { key: 'te_jamaica', icon: '🌺☕', name: 'Té de jamaica', helps: ['inflamacion_general','hidratacion'], pros: ['Bebida ligera'], cons: ['Puede bajar la presión en sensibles'] },
+        { key: 'te_eucalipto', icon: '🌿☕', name: 'Té / vapor de eucalipto', helps: ['congestion','tos','resfriado_gripe'], pros: ['Despeja vías respiratorias'], cons: ['Evitar en niños pequeños sin guía'] },
+        { key: 'valeriana', icon: '🛌🌿', name: 'Infusión de valeriana', helps: ['insomnio','ansiedad'], pros: ['Relajante'], cons: ['Puede dar somnolencia'] },
+        { key: 'rabano_miel', icon: '🖤🥄', name: 'Jarabe de rábano con miel', helps: ['tos','dolor_garganta','expectoracion'], pros: ['Tradicional en zonas andinas'], cons: ['Sabor fuerte'] },
+        { key: 'hierbabuena_sal', icon: '🌿🧂', name: 'Hierbabuena con sal (cataplasma)', helps: ['golpes','dolor_muscular','inflamacion_local'], pros: ['Aplicación local'], cons: ['No en piel lesionada'] },
+        { key: 'manzanilla_anis_menta', icon: '🌼⭐🌿', name: 'Té de manzanilla, anís y menta', helps: ['malestar_digestivo','gases','nausea'], pros: ['Posible alivio post-comida'], cons: ['Evitar exceso de anís en niños'] },
+        { key: 'leche_miel_nuez', icon: '🥛🍯', name: 'Leche con miel y nuez moscada', helps: ['insomnio','ansiedad'], pros: ['Ritual nocturno reconfortante'], cons: ['Lácteos: revisar tolerancia'] },
+        { key: 'canelazo', icon: '🔥🌙', name: 'Canelazo (canela, limón y miel)', helps: ['resfriado_gripe','frio_corporal'], pros: ['Reconforta en clima frío'], cons: ['Evitar alcoholes en menores (si aplica)'] },
+        { key: 'hoja_aire', icon: '🌿🗣️', name: 'Hoja del aire (gárgaras)', helps: ['dolor_garganta','inflamacion_local'], pros: ['Uso tradicional'], cons: ['Evidencia limitada'] },
+        { key: 'ajo_leche', icon: '🧄🥛', name: 'Ajo con leche', helps: ['tos','congestion'], pros: ['Ajo con compuestos antimicrobianos'], cons: ['Sabor/aroma intensos'] },
+        { key: 'agua_perejil', icon: '🌿💧', name: 'Agua de perejil', helps: ['retencion_liquidos'], pros: ['Diurético tradicional'], cons: ['Evitar exceso; posible irritación renal'] },
+        { key: 'oil_pulling', icon: '🥥🫗', name: 'Aceite de coco (enjuague bucal)', helps: ['mal_aliento','higiene_bucal'], pros: ['Sencillo'], cons: ['No tragar'] },
+        { key: 'coco_lavanda', icon: '🥥💜', name: 'Aceite de coco con lavanda (piel)', helps: ['irritacion_piel','cicatrizacion'], pros: ['Hidratante y calmante'], cons: ['Evitar alergias a aceites esenciales'] },
+        { key: 'pepa_papaya', icon: '🥭', name: 'Pepa de papaya (purgante tradicional)', helps: ['malestar_digestivo'], pros: ['Enzimas digestivas'], cons: ['Eficacia como purgante no comprobada'] },
+        { key: 'piedra_alumbre', icon: '🪨', name: 'Piedra de alumbre (aftas)', helps: ['aftas','heridas_leves'], pros: ['Astringente local'], cons: ['No ingerir; enjuagar bien'] },
+        { key: 'vinagre_manzana', icon: '🍎🧴', name: 'Vinagre de manzana (diluido)', helps: ['acidez','digestivo','garganta_irritada','picaduras'], pros: ['Multipropósito tradicional'], cons: ['Usar siempre diluido'] },
+        { key: 'kombucha', icon: '🥤', name: 'Kombucha', helps: ['digestivo','salud_intestinal'], pros: ['Probióticos'], cons: ['Cuidado en personas sensibles a fermentados'] },
+        { key: 'kefir', icon: '🥛🫧', name: 'Kéfir', helps: ['salud_intestinal','intolerancia_lactosa_parcial'], pros: ['Probióticos y nutrientes'], cons: ['Revisar tolerancia a lácteos'] },
+        { key: 'kimchi', icon: '🥬🌶️', name: 'Kimchi', helps: ['salud_intestinal'], pros: ['Probióticos; bajo en calorías'], cons: ['Picante/sodio en exceso'] }
+      ]
     };
 
     function render(recs){
@@ -180,12 +159,17 @@
         const el = document.createElement('div');
         el.className = 'rec-item';
         el.innerHTML = `
-          <h4>${r.name}</h4>
+          <h4>${r.icon || ''} ${r.name}</h4>
           <div class="proscons">
-            <div><strong>Pros</strong><ul>${r.pros.map(p=>`<li>${p}</li>`).join('')}</ul></div>
-            <div><strong>Contras</strong><ul>${r.cons.map(c=>`<li>${c}</li>`).join('')}</ul></div>
+            <div><strong>Ayuda con</strong><ul>${(r.helps||[]).map(h=>`<li>${h.replaceAll('_',' ')}</li>`).join('')}</ul></div>
+            <div><strong>Notas</strong>
+              <ul>
+                ${(r.pros||[]).map(p=>`<li class="badge-ok">${p}</li>`).join('')}
+                ${(r.cons||[]).map(c=>`<li class="badge-warn">${c}</li>`).join('')}
+              </ul>
+            </div>
           </div>
-          <div class="muted" style="margin-top:8px">Consulta con un profesional si tienes condiciones médicas, tomas otros fármacos, o los síntomas son intensos.</div>
+          <div class="muted" style="margin-top:8px">Uso tradicional y educativo basado en el documento del grupo.</div>
         `;
         out.appendChild(el);
       })
@@ -193,6 +177,18 @@
 
     document.getElementById('form').addEventListener('submit', (e)=>{
       e.preventDefault();
+      const form = e.currentTarget;
+      const syms = new Set(Array.from(form.querySelectorAll('input[name="sym"]:checked')).map(i=>i.value));
+
+      // Selección: mostrar todos los remedios que "ayudan" con al menos 1 síntoma marcado.
+      let recs = CATALOG.remedies.filter(r => (r.helps||[]).some(h => syms.has(h) || (h==='resfriado_gripe' && (syms.has('tos')||syms.has('congestion')||syms.has('dolor_garganta')||syms.has('fiebre')))));
+
+      // Si no marcó nada, sugerir medidas generales de los fermentados/digestivos o mostrar todos ordenados por nombre
+      if(syms.size===0){
+        recs = CATALOG.remedies.slice(0,6); // muestra un subconjunto inicial
+      }
+      render(recs);
+    });
       const form = e.currentTarget;
       const cond = document.getElementById('cond').value || 'indef';
       const syms = Array.from(form.querySelectorAll('input[name="sym"]:checked')).map(i=>i.value);
@@ -223,12 +219,8 @@
     });
 
     // Utilidad: establecer QR cuando tengamos la URL final (ej.: GitHub Pages)
-    // Llama a setupQR('https://tu-dominio.github.io/triage/'); tras publicar
-    function setupQR(url){
-      const img = document.getElementById('qrImg');
-      const api = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(url)}`;
-      img.src = api; img.classList.remove('qr');
-    }
+    // Llama a setupQR una vez publicada la URL final
+    setupQR('https://rolansor.github.io/prueba_proyecto/');
     window.setupQR = setupQR;
 
     // Inicial
