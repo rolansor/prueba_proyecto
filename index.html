@@ -4,111 +4,127 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Orientación rápida de síntomas (demo)</title>
+  <meta name="description" content="Sitio educativo de orientación tradicional basado en el documento del grupo. No es diagnóstico médico." />
   <style>
-    :root{--bg:#0f172a;--card:#111827;--muted:#6b7280;--accent:#22d3ee;--ok:#10b981;--warn:#f59e0b;--err:#ef4444;--txt:#e5e7eb}
+    :root{--bg:#0f172a;--card:#111827;--muted:#94a3b8;--accent:#22d3ee;--ok:#10b981;--warn:#f59e0b;--err:#ef4444;--txt:#e5e7eb}
     *{box-sizing:border-box}
-    body{margin:0;font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu;line-height:1.35;background:linear-gradient(180deg,#020617,#0b1022);color:var(--txt);min-height:100dvh;}
-    .wrap{max-width:900px;margin:0 auto;padding:24px}
-    header{display:flex;align-items:center;gap:16px;margin:20px 0 12px}
-    header .logo{width:44px;height:44px;border-radius:12px;background:radial-gradient(circle at 30% 30%, var(--accent), transparent 60%),linear-gradient(135deg,#111,#333);display:grid;place-items:center;box-shadow:0 10px 30px rgba(34,211,238,.25)}
-    header h1{font-size:clamp(20px,3vw,28px);margin:0}
-    .card{background:linear-gradient(180deg,#0b1222,#0a0f1b);border:1px solid rgba(255,255,255,.06);border-radius:16px;padding:20px;box-shadow:0 10px 30px rgba(2,6,23,.45)}
-    .grid{display:grid;grid-template-columns:1fr;gap:16px}
-    @media (min-width:880px){.grid{grid-template-columns:1.1fr .9fr}}
-    fieldset{border:0;margin:0;padding:0}
-    legend{font-weight:700;margin-bottom:8px}
-    label{display:flex;align-items:center;gap:10px;margin:8px 0}
-    input[type="text"], select, textarea{width:100%;background:#0c1323;color:var(--txt);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:12px}
-    .btn{display:inline-flex;align-items:center;gap:8px;background:linear-gradient(180deg,#1f2937,#111827);color:var(--txt);border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:10px 14px;cursor:pointer}
-    .btn:hover{border-color:rgba(255,255,255,.25)}
-    .btn.primary{background:linear-gradient(180deg,#0ea5e9,#0284c7);color:#05131f;border:none}
-    .muted{color:var(--muted);font-size:14px}
-    .pill{display:inline-block;padding:6px 10px;border-radius:999px;background:#0c1323;border:1px solid rgba(255,255,255,.08);font-size:12px}
-    .rec{display:flex;flex-direction:column;gap:10px}
-    .rec-item{border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:12px;background:#0b1222}
-    .rec-item h4{margin:0 0 6px;font-size:16px}
-    .proscons{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-    .proscons ul{margin:0 0 0 18px}
-    .badge-ok{color:#052; background:#052a; border:1px solid #0f55}
-    .badge-warn{color:#3d2a05; background:#3d2a05aa; border:1px solid #7a520b}
-    .disclaimer{font-size:13px;color:#c7cbd6;background:#0a0f1b;border:1px dashed rgba(255,255,255,.15);border-radius:12px;padding:12px}
-    footer{margin:20px 0;color:#94a3b8;font-size:13px}
-    .qr{display:none;margin-top:8px}
+    body{margin:0;font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu;line-height:1.45;background:linear-gradient(180deg,#020617,#0b1022);color:var(--txt);min-height:100dvh;}
+    .wrap{width:100%;padding:20px}
+    header{display:flex;align-items:center;gap:16px;margin-bottom:24px;padding:0 20px}
+    header .logo{width:48px;height:48px;border-radius:14px;background:#0b1222 url('img/logo.svg') center/72% no-repeat;display:grid;place-items:center;box-shadow:0 10px 30px rgba(34,211,238,.25);border:1px solid rgba(255,255,255,.08)}
+    header h1{font-size:clamp(24px,4vw,32px);margin:0}
+    .symptoms-section{background:linear-gradient(180deg,#0b1222,#0a0f1b);border:1px solid rgba(255,255,255,.08);border-radius:20px;padding:24px;margin:0 20px;box-shadow:0 10px 30px rgba(2,6,23,.45)}
+    .symptoms-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:16px;margin-top:20px}
+    .symptom-btn{background:#0c1323;border:2px solid rgba(255,255,255,.08);border-radius:16px;padding:16px;cursor:pointer;transition:all 0.3s;display:flex;flex-direction:column;align-items:center;gap:8px;min-height:120px}
+    .symptom-btn:hover{border-color:var(--accent);transform:translateY(-2px);box-shadow:0 8px 20px rgba(34,211,238,.2)}
+    .symptom-btn.active{background:linear-gradient(135deg,#0ea5e9,#0284c7);border-color:var(--accent);box-shadow:0 8px 25px rgba(34,211,238,.3)}
+    .symptom-btn img{width:48px;height:48px;opacity:0.9}
+    .symptom-btn.active img{opacity:1}
+    .symptom-btn span{font-size:13px;text-align:center;color:var(--txt)}
+    .symptom-btn.active span{color:#fff;font-weight:500}
+    .actions{display:flex;gap:12px;margin-top:24px;justify-content:center}
+    .btn{display:inline-flex;align-items:center;gap:8px;background:linear-gradient(180deg,#1f2937,#111827);color:var(--txt);border:1px solid rgba(255,255,255,.14);border-radius:12px;padding:12px 20px;cursor:pointer;font-size:15px;transition:all 0.2s}
+    .btn:hover{border-color:rgba(255,255,255,.3);transform:translateY(-1px)}
+    .btn.primary{background:linear-gradient(180deg,#0ea5e9,#0284c7);color:#fff;border:none;font-weight:500}
+    .btn.primary:hover{background:linear-gradient(180deg,#0284c7,#0369a1)}
+    .results-section{margin:32px 20px 0;opacity:0;transition:opacity 0.5s;min-height:200px}
+    .results-section.show{opacity:1}
+    .results-title{font-size:24px;margin-bottom:20px;text-align:center}
+    .rec{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px}
+    .rec-item{border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:16px;background:linear-gradient(180deg,#0b1222,#0a0f1b);transition:all 0.3s}
+    .rec-item:hover{transform:translateY(-2px);box-shadow:0 10px 25px rgba(2,6,23,.5)}
+    .rec-item h4{margin:0 0 12px;font-size:18px;display:flex;align-items:center;gap:10px}
+    .proscons{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+    .proscons ul{margin:0;padding-left:20px;font-size:14px}
+    .badge-ok{display:inline-block;margin:2px 0;padding:4px 8px;border-radius:999px;background:#052e1a;border:1px solid #10b981;font-size:13px}
+    .badge-warn{display:inline-block;margin:2px 0;padding:4px 8px;border-radius:999px;background:#3d2a05aa;border:1px solid #f59e0b;font-size:13px}
+    .disclaimer{font-size:14px;color:#c7cbd6;background:#0a0f1b;border:1px dashed rgba(255,255,255,.15);border-radius:12px;padding:16px;margin:24px 20px;text-align:center}
+    .muted{color:var(--muted);font-size:14px;text-align:center;margin-top:8px}
+    .pill{display:inline-block;padding:6px 10px;border-radius:999px;background:#0c1323;border:1px solid rgba(255,255,255,.12);font-size:12px}
+    footer{margin:32px 20px 16px;color:#94a3b8;font-size:13px;text-align:center}
+    @media (max-width:640px){.symptoms-grid{grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:12px}.symptom-btn{min-height:100px;padding:12px}.symptom-btn img{width:40px;height:40px}.symptom-btn span{font-size:12px}}
   </style>
 </head>
 <body>
   <div class="wrap">
     <header>
-      <div class="logo" aria-hidden="true">🩺</div>
+      <div class="logo" aria-hidden="true"></div>
       <div>
         <h1>Orientación rápida de síntomas <span class="pill">DEMO</span></h1>
-        <div class="muted">No es diagnóstico médico. Para urgencias, acude a un servicio de salud.</div>
+        <div class="muted">Basado en el documento del grupo. No es diagnóstico médico.</div>
       </div>
     </header>
 
-    <div class="grid">
-      <section class="card">
-        <form id="form">
-          <fieldset>
-            <legend>¿Qué presentas hoy?</legend>
-            <label><input type="checkbox" name="sym" value="fiebre" /> Fiebre</label>
-            <label><input type="checkbox" name="sym" value="tos" /> Tos</label>
-            <label><input type="checkbox" name="sym" value="dolor_garganta" /> Dolor de garganta</label>
-            <label><input type="checkbox" name="sym" value="congestion" /> Congestión nasal</label>
-            <label><input type="checkbox" name="sym" value="dolor_cabeza" /> Dolor de cabeza / migraña</label>
-            <label><input type="checkbox" name="sym" value="dolor_muscular" /> Dolor muscular / golpes</label>
-            <label><input type="checkbox" name="sym" value="nausea" /> Náuseas / malestar digestivo</label>
-            <label><input type="checkbox" name="sym" value="acidez" /> Acidez estomacal</label>
-            <label><input type="checkbox" name="sym" value="insomnio" /> Ansiedad / insomnio</label>
-            <label><input type="checkbox" name="sym" value="irritacion_piel" /> Irritación cutánea / quemadura leve</label>
-            <label><input type="checkbox" name="sym" value="heridas_leves" /> Heridas leves / aftas</label>
-            <label><input type="checkbox" name="sym" value="mal_aliento" /> Mal aliento</label>
-            <label><input type="checkbox" name="sym" value="retencion_liquidos" /> Retención de líquidos</label>
-          </fieldset>
+    <section class="symptoms-section">
+      <h2 style="margin:0;text-align:center;font-size:20px">¿Qué síntomas presentas hoy?</h2>
+      <div class="symptoms-grid" id="symptomsGrid">
+        <button type="button" class="symptom-btn" data-symptom="fiebre">
+          <img src="img/fever.svg" alt="Fiebre">
+          <span>Fiebre</span>
+        </button>
+        <button type="button" class="symptom-btn" data-symptom="tos">
+          <img src="img/cough.svg" alt="Tos">
+          <span>Tos</span>
+        </button>
+        <button type="button" class="symptom-btn" data-symptom="dolor_garganta">
+          <img src="img/throat.svg" alt="Dolor de garganta">
+          <span>Dolor de garganta</span>
+        </button>
+        <button type="button" class="symptom-btn" data-symptom="congestion">
+          <img src="img/water.svg" alt="Congestión">
+          <span>Congestión nasal</span>
+        </button>
+        <button type="button" class="symptom-btn" data-symptom="dolor_cabeza">
+          <img src="img/headache.svg" alt="Dolor de cabeza">
+          <span>Dolor de cabeza</span>
+        </button>
+        <button type="button" class="symptom-btn" data-symptom="dolor_muscular">
+          <img src="img/muscle.svg" alt="Dolor muscular">
+          <span>Dolor muscular</span>
+        </button>
+        <button type="button" class="symptom-btn" data-symptom="nausea">
+          <img src="img/nausea.svg" alt="Náuseas">
+          <span>Náuseas</span>
+        </button>
+        <button type="button" class="symptom-btn" data-symptom="acidez">
+          <img src="img/alum-stone.svg" alt="Acidez">
+          <span>Acidez estomacal</span>
+        </button>
+        <button type="button" class="symptom-btn" data-symptom="insomnio">
+          <img src="img/valerian.svg" alt="Insomnio">
+          <span>Ansiedad / Insomnio</span>
+        </button>
+        <button type="button" class="symptom-btn" data-symptom="irritacion_piel">
+          <img src="img/skin.svg" alt="Irritación piel">
+          <span>Irritación cutánea</span>
+        </button>
+        <button type="button" class="symptom-btn" data-symptom="heridas_leves">
+          <img src="img/wound.svg" alt="Heridas">
+          <span>Heridas leves</span>
+        </button>
+        <button type="button" class="symptom-btn" data-symptom="mal_aliento">
+          <img src="img/breath.svg" alt="Mal aliento">
+          <span>Mal aliento</span>
+        </button>
+        <button type="button" class="symptom-btn" data-symptom="retencion_liquidos">
+          <img src="img/parsley-water.svg" alt="Retención">
+          <span>Retención líquidos</span>
+        </button>
+      </div>
+      <div class="actions">
+        <button class="btn primary" id="btnSuggest" type="button">Ver sugerencias</button>
+        <button class="btn" id="btnReset" type="button">Limpiar selección</button>
+      </div>
+    </section>
 
-          <div style="margin-top:12px"></div>
-          <label>
-            Posible condición (autorreporte)
-            <select id="cond">
-              <option value="">— Selecciona —</option>
-              <option value="gripe">Gripe / resfriado</option>
-              <option value="migraña">Migraña / cefalea</option>
-              <option value="dolor_muscular">Dolor muscular</option>
-              <option value="indef">No sé / prefiero que me orienten</option>
-            </select>
-          </label>
+    <section class="results-section" id="resultsSection">
+      <h3 class="results-title">Sugerencias de remedios tradicionales</h3>
+      <div id="out" class="rec"></div>
+    </section>
 
-          <div style="display:flex;gap:10px;margin-top:14px">
-            <button class="btn primary" type="submit">Ver sugerencias</button>
-            <button class="btn" id="btnReset" type="button">Limpiar</button>
-          </div>
-        </form>
-
-        <div class="disclaimer" style="margin-top:14px">
-          <strong>Aviso de seguridad:</strong> este sitio es educativo y genérico. No reemplaza una evaluación clínica.
-          Revisa siempre contraindicaciones y <em>etiquetas</em> de medicamentos. Si hay dolor intenso, dificultad para
-          respirar, fiebre alta persistente, rigidez de cuello, confusión, deshidratación o síntomas en niños pequeños
-          o embarazadas, busca atención profesional.
-        </div>
-      </section>
-
-      <aside class="card">
-        <h3 style="margin-top:0">Sugerencias</h3>
-        <div id="out" class="rec"></div>
-
-        <details style="margin-top:10px">
-          <summary>💡 Activar orientación con IA (demo)</summary>
-          <p class="muted">Esta sección puede conectarse a una API de IA de bajo costo. Aquí simulamos una llamada.</p>
-          <button class="btn" id="btnAI" type="button">Consultar IA (simulada)</button>
-          <pre id="aiOut" style="white-space:pre-wrap;background:#0c1323;border:1px solid rgba(255,255,255,.08);padding:10px;border-radius:10px;margin-top:8px"></pre>
-        </details>
-
-        <details style="margin-top:10px">
-          <summary>🔗 QR del sitio (se genera al publicar)</summary>
-          <div class="muted">Tras publicar tu página, pegaremos aquí el QR con la URL final.</div>
-          <img id="qrImg" class="qr" alt="QR del sitio" />
-        </details>
-      </aside>
+    <div class="disclaimer">
+      <strong>⚠️ Importante:</strong> Información de uso tradicional y educativo. No reemplaza una evaluación médica profesional.
+      Si presentas signos de alarma (dolor intenso, fiebre alta persistente, dificultad respiratoria), busca atención médica inmediata.
     </div>
 
     <footer>
@@ -119,12 +135,11 @@
   <script>
     const out = document.getElementById('out');
     const last = document.getElementById('last');
-    const aiOut = document.getElementById('aiOut');
-
+    const resultsSection = document.getElementById('resultsSection');
+    const selectedSymptoms = new Set();
     last.textContent = new Date().toLocaleString();
 
     const CATALOG = {
-      // Basado SOLO en el documento del grupo (no diagnóstico). Cada remedio incluye usos tentativos.
       remedies: [
         { key: 'miel_limon', icon: '🍯🍋', name: 'Miel con limón', helps: ['tos','dolor_garganta','resfriado_gripe'], pros: ['Suaviza garganta','Sabor agradable'], cons: ['No usar en menores de 1 año'] },
         { key: 'jengibre_miel', icon: '🫚🍯', name: 'Jengibre con miel', helps: ['nausea','malestar_digestivo','resfriado_gripe'], pros: ['Antiinflamatorio ligero'], cons: ['Evitar en úlcera activa'] },
@@ -154,74 +169,68 @@
 
     function render(recs){
       out.innerHTML = '';
-      if(!recs || recs.length === 0){ out.innerHTML = '<div class="muted">No hay sugerencias aún. Completa el formulario y presiona "Ver sugerencias".</div>'; return; }
+      if(!recs || recs.length === 0){
+        out.innerHTML = '<div class="muted">Selecciona uno o más síntomas y presiona "Ver sugerencias".</div>';
+        resultsSection.classList.remove('show');
+        return;
+      }
+      resultsSection.classList.add('show');
       recs.forEach(r=>{
         const el = document.createElement('div');
         el.className = 'rec-item';
         el.innerHTML = `
           <h4>${r.icon || ''} ${r.name}</h4>
           <div class="proscons">
-            <div><strong>Ayuda con</strong><ul>${(r.helps||[]).map(h=>`<li>${h.replaceAll('_',' ')}</li>`).join('')}</ul></div>
-            <div><strong>Notas</strong>
+            <div><strong>Ayuda con:</strong><ul>${(r.helps||[]).map(h=>`<li>${h.replaceAll('_',' ')}</li>`).join('')}</ul></div>
+            <div><strong>Consideraciones:</strong>
               <ul>
-                ${(r.pros||[]).map(p=>`<li class="badge-ok">${p}</li>`).join('')}
-                ${(r.cons||[]).map(c=>`<li class="badge-warn">${c}</li>`).join('')}
+                ${(r.pros||[]).map(p=>`<li class="badge-ok">✓ ${p}</li>`).join('')}
+                ${(r.cons||[]).map(c=>`<li class="badge-warn">⚠ ${c}</li>`).join('')}
               </ul>
             </div>
           </div>
-          <div class="muted" style="margin-top:8px">Uso tradicional y educativo basado en el documento del grupo.</div>
+          <div class="muted">Uso tradicional basado en conocimiento popular.</div>
         `;
         out.appendChild(el);
-      })
+      });
+      resultsSection.scrollIntoView({behavior:'smooth',block:'start'});
     }
 
-    document.getElementById('form').addEventListener('submit', (e)=>{
-      e.preventDefault();
-      const form = e.currentTarget;
-      const syms = new Set(Array.from(form.querySelectorAll('input[name="sym"]:checked')).map(i=>i.value));
+    // Manejo de selección de síntomas
+    document.querySelectorAll('.symptom-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const symptom = btn.dataset.symptom;
+        if(selectedSymptoms.has(symptom)){
+          selectedSymptoms.delete(symptom);
+          btn.classList.remove('active');
+        } else {
+          selectedSymptoms.add(symptom);
+          btn.classList.add('active');
+        }
+      });
+    });
 
-      // Selección: mostrar todos los remedios que "ayudan" con al menos 1 síntoma marcado.
-      let recs = CATALOG.remedies.filter(r => (r.helps||[]).some(h => syms.has(h) || (h==='resfriado_gripe' && (syms.has('tos')||syms.has('congestion')||syms.has('dolor_garganta')||syms.has('fiebre')))));
-
-      // Si no marcó nada, sugerir medidas generales de los fermentados/digestivos o mostrar todos ordenados por nombre
-      if(syms.size===0){
-        recs = CATALOG.remedies.slice(0,6); // muestra un subconjunto inicial
+    // Botón ver sugerencias
+    document.getElementById('btnSuggest').addEventListener('click', () => {
+      let recs = CATALOG.remedies.filter(r => (r.helps||[]).some(h =>
+        selectedSymptoms.has(h) || (h==='resfriado_gripe' && 
+          (selectedSymptoms.has('tos')||selectedSymptoms.has('congestion')||
+           selectedSymptoms.has('dolor_garganta')||selectedSymptoms.has('fiebre')))
+      ));
+      if(selectedSymptoms.size===0){ 
+        recs = [];
       }
       render(recs);
     });
-      const form = e.currentTarget;
-      const cond = document.getElementById('cond').value || 'indef';
-      const syms = Array.from(form.querySelectorAll('input[name="sym"]:checked')).map(i=>i.value);
 
-      // Reglas simples (ejemplo):
-      let key = cond;
-      if(cond === 'indef'){
-        if(syms.includes('tos') || syms.includes('congestion') || syms.includes('garganta')) key = 'gripe';
-        if(syms.includes('dolor_cabeza') && !syms.includes('tos') && !syms.includes('congestion')) key = 'migraña';
-        if(syms.includes('dolor_muscular') && syms.length === 1) key = 'dolor_muscular';
-      }
-      render(CATALOG[key]);
-    });
-
-    document.getElementById('btnReset').addEventListener('click',()=>{
-      document.getElementById('form').reset();
+    // Botón limpiar
+    document.getElementById('btnReset').addEventListener('click', () => {
+      selectedSymptoms.clear();
+      document.querySelectorAll('.symptom-btn').forEach(btn => {
+        btn.classList.remove('active');
+      });
       render([]);
     });
-
-    // IA simulada (aquí iría la llamada a una API real de bajo costo)
-    document.getElementById('btnAI').addEventListener('click', async ()=>{
-      aiOut.textContent = 'Consultando…';
-      // Simulación de latencia
-      await new Promise(r=>setTimeout(r, 400));
-      // Demostración de combinación de síntomas/condición
-      const cond = document.getElementById('cond').value || 'indef';
-      aiOut.textContent = `Orientación generada (demo): dada la selección "${cond}", considera iniciar con medidas generales (hidratación, descanso). Si aparecen signos de alarma (dolor intenso, fiebre alta persistente, dificultad para respirar), busca atención médica.`;
-    });
-
-    // Utilidad: establecer QR cuando tengamos la URL final (ej.: GitHub Pages)
-    // Llama a setupQR una vez publicada la URL final
-    setupQR('https://rolansor.github.io/prueba_proyecto/');
-    window.setupQR = setupQR;
 
     // Inicial
     render([]);
